@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lanou.mapper.DepartmentMapper">
+
+    <select id="findAll"
+            resultType="com.lanou.domain.Department">
+        SELECT * FROM crm_department
+    </select>
+
+    <select id="findById"
+            parameterType="java.lang.String"
+            resultType="com.lanou.domain.Department">
+        SELECT * FROM crm_department WHERE depID = #{value}
+    </select>
+
+
+    <!--根据部门id查部门下所有职务集合-->
+    <resultMap id="deptAndPostMap" type="com.lanou.domain.Department">
+        <id column="depID" property="depID"/>
+        <result column="depName" property="depName"/>
+
+        <collection property="postList" ofType="com.lanou.domain.Post">
+            <id column="postId" property="postId"/>
+            <result column="postName" property="postName"/>
+            <result column="depId" property="depId"/>
+        </collection>
+    </resultMap>
+
+    <!--根据部门id查询职务集合  一对多-->
+    <select id="findPostByDeptID"
+            parameterType="java.lang.String"
+            resultMap="deptAndPostMap">
+    SELECT *
+    FROM crm_department,crm_post
+    WHERE
+    crm_department.depID = crm_post.depId
+    AND
+    crm_department.depID =#{value}
+    </select>
+
+</mapper>
